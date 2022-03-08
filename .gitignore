@@ -1,7 +1,11 @@
 
 test.*
-server.pid
-./server
+*.exe
+*.db
+*.pid
+!core/server
+server
 
 vender/
 .idea/
+.vscode/
