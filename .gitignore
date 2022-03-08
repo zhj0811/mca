@@ -1,6 +1,7 @@
 
 test.*
-server
 server.pid
+./server
+
 vender/
 .idea/
