@@ -1,0 +1,20 @@
+
+log:
+#  file: ./test.log
+
+local:
+  port: 9090
+
+gin:
+  mod: debug # release test debug
+
+admin:
+  user: admin
+  passwd: 12345678
+
+db:
+  #  type:
+  name: test
+  port: 3306
+  user: root
+  passwd: passwd

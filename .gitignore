@@ -1,0 +1,6 @@
+
+test.*
+server
+server.pid
+vender/
+.idea/
