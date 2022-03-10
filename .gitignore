@@ -3,9 +3,9 @@ test.*
 *.exe
 *.db
 *.pid
-!core/server
-server
+/server
 
 vender/
 .idea/
 .vscode/
+

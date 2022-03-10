@@ -16,11 +16,19 @@ type TUser struct {
 	Status   int8   `json:"status"`
 }
 
+const (
+	UserStatusDisable int8 = -1
+)
+
 func InsertUser(user *TUser) error {
 	if user.UserId == "" {
 		user.UserId = primitive.NewObjectID().Hex()
 	}
 	return db.Model(&TUser{}).Create(user).Error
+}
+
+func PutUser(row *TUser) error {
+	return db.Save(row).Error
 }
 
 var adminId string
@@ -52,6 +60,16 @@ func GetUserByName(name string) (res TUser, err error) {
 	return
 }
 
+func GetUserById(id string) (res TUser, err error) {
+	err = db.Model(&TUser{}).Where("user_id = ?", id).First(&res).Error
+	return
+}
+
+func GetAllOpr() (res []*TUser, err error) {
+	err = db.Model(&TUser{}).Where("user_id != ?", adminId).Find(&res).Error
+	return
+}
+
 func IsAdminRole(id string) int8 {
 	if id == adminId {
 		return RoleAdmin
@@ -62,4 +80,14 @@ func IsAdminRole(id string) int8 {
 func UpdatePasswd(id, passwd string) error {
 	err := db.Model(&TUser{Name: id}).Update("passwd", passwd).Error
 	return err
+}
+
+func IsValidName(name string) (valid bool, err error) {
+	var count int64
+	err = db.Model(&TUser{}).Where("name = ?", name).Count(&count).Error
+	if err != nil {
+		return
+	}
+	valid = count == 0
+	return
 }

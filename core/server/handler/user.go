@@ -69,3 +69,60 @@ func PassReset(ctx *gin.Context) {
 	common.SimpleResponse(ctx, &res)
 	return
 }
+
+func GetUserInfo(ctx *gin.Context) {
+	id := ctx.GetHeader("id")
+	res, err := db.GetUserById(id)
+	if err != nil {
+		logger.Errorf("Get user %s info failed %s.", id, err.Error())
+		common.Response(ctx, err, common.QueryDBErr, nil)
+		return
+	}
+	logger.Infof("Get user %s info success.", id)
+	common.Response(ctx, nil, common.Success, &res)
+	return
+}
+
+func GetAllOpr(ctx *gin.Context) {
+	res, err := db.GetAllOpr()
+	if err != nil {
+		logger.Errorf("Get operation user info failed %s.", err.Error())
+		common.Response(ctx, err, common.QueryDBErr, nil)
+		return
+	}
+	logger.Debug("Get operation user info success.")
+	common.Response(ctx, nil, common.Success, &res)
+	return
+}
+
+func PutUserInfo(ctx *gin.Context) {
+	req := db.TUser{}
+	err := ctx.ShouldBindJSON(&req)
+	if err != nil {
+		logger.Errorf("Request info err %s", err.Error())
+		common.Response(ctx, err, common.RequestInfoErr, nil)
+		return
+	}
+	err = db.PutUser(&req)
+	if err != nil {
+		logger.Errorf("Put user %s info failed %s.", req.UserId, err.Error())
+		common.Response(ctx, err, common.QueryDBErr, nil)
+		return
+	}
+	logger.Infof("Put user %s info success.", req.UserId)
+	common.Response(ctx, nil, common.Success, nil)
+	return
+}
+
+func IsValidName(ctx *gin.Context) {
+	name := ctx.Query("name")
+	res := factory.IsValidName(name)
+	if res.Code != common.Success {
+		//logger.Errorf("Update user %s passwd failed %s.", req.User, res.Msg)
+		common.SimpleResponse(ctx, &res)
+		return
+	}
+	//logger.Infof("Update user %s passwd success", req.User)
+	common.SimpleResponse(ctx, &res)
+	return
+}

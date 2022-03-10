@@ -47,7 +47,7 @@ func CreateCertWF(req *CertApplyWfReq) common.ResponseInfo {
 			wfNodeRole := db.TWfNodeRole{WfNodeId: wfNode.WfNodeId, RoleId: role}
 			wfNodeRoles = append(wfNodeRoles, wfNodeRole)
 		}
-		err = db.InsertWfNodeRoles(&wfNodeRoles)
+		err = db.InsertWfNodeRoles(wfNodeRoles)
 		if err != nil {
 			err = errors.WithMessage(err, "insert workflow node role failed")
 			break
@@ -71,11 +71,23 @@ func CreateWfNodeRole(req *WfNodeRoleReq) common.ResponseInfo {
 		wfNodeRole := db.TWfNodeRole{WfNodeId: req.WfNodeId, RoleId: role}
 		wfNodeRoles = append(wfNodeRoles, wfNodeRole)
 	}
-	err := db.InsertWfNodeRoles(&wfNodeRoles)
+	err := db.InsertWfNodeRoles(wfNodeRoles)
 	if err != nil {
 		res.Msg = errors.WithMessage(err, "insert workflow node role failed").Error()
 		res.Code = common.InsertDBErr
 		return res
 	}
+	return res
+}
+
+func GetSpecWorkflow(id string) common.ResponseInfo {
+	res := common.ResponseInfo{Code: common.Success}
+	wf, err := db.GetSpecWorkflow(id)
+	if err != nil {
+		res.Code = common.QueryDBErr
+		res.Msg = errors.WithMessage(err, "query db failed").Error()
+		return res
+	}
+	res.Data = &wf
 	return res
 }

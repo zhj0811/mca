@@ -22,6 +22,12 @@ func createRouter() *gin.Engine {
 
 	{
 		web.Use(utils.TokenAuthMiddleware())
+
+		web.GET("/user/opr", GetAllOpr)
+		web.GET("/user/info", GetUserInfo)       //超管或业务员获取用户信息
+		web.PUT("/user/info", PutUserInfo)       //超管或业务员更新用户信息
+		web.GET("/user/name/valid", IsValidName) //超管判断用户名是否唯一
+
 		web.POST("/register", Register)                    //超管注册操作员
 		web.PATCH("/user/pass", PassReset)                 //超管重置密码
 		web.POST("/user/role", CreateRole)                 //超管创建角色
@@ -29,9 +35,24 @@ func createRouter() *gin.Engine {
 		web.POST("/user/role/role_users", AddUsersForRole) //超管给某个角色添加多用户
 		web.POST("/user/role/user_roles", AddRolesForUser) //超管给某个角色添加多用户
 
+		web.GET("/user/role", GetRoles)            //超管查询创建的所有角色
+		web.GET("/user/role/:id", GetSpecUserRole) //超管获取执行用户的所有角色
+
 		wf := web.Group("workflow")
-		wf.POST("/", CreateCertWF)              //超管创建申请流程
-		wf.POST("/node/role", CreateWfNodeRole) //创建流程节点操作角色
+		wf.POST("/", CreateCertWF)                //超管创建申请流程
+		wf.POST("/node/role", CreateWfNodeRole)   //创建流程节点操作角色
+		wf.DELETE("/node/role", DeleteWfNodeRole) //创建流程节点操作角色
+
+		wf.GET("/", GetLastWorkflows)
+		wf.GET("/info/:id", GetSpecWorkflow)
+
+		opr := web.Group("/opr")
+		opr.GET("/wf/act", GetActWfs)
+	}
+
+	app := v1.Group("/app")
+	{
+		app.POST("/ind/apply", CreateIndCertApply)
 	}
 
 	//v1.POST("/report", handler.Report)

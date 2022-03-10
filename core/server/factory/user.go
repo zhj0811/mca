@@ -71,3 +71,16 @@ func PassReset(req *define.User) common.ResponseInfo {
 	}
 	return res
 }
+
+func IsValidName(name string) common.ResponseInfo {
+	res := common.ResponseInfo{Code: common.Success}
+	//utils.RegexpStr(utils.RegexpTypeName, name)
+	ok, err := db.IsValidName(name)
+	if err != nil {
+		res.Code = common.QueryDBErr
+		res.Msg = errors.WithMessage(err, "query user name count failed").Error()
+		return res
+	}
+	res.Data = &ok
+	return res
+}

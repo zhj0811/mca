@@ -54,18 +54,18 @@ func InitDb() error {
 func autoMigrateTable() error {
 
 	db.AutoMigrate(&TUser{})
-	//return DB.AutoMigrate(&TPolicy{})
+	db.AutoMigrate(&TApply{})
 	db.AutoMigrate(&TWfType{})
 	db.AutoMigrate(&TLog{})
 	db.AutoMigrate(&TRole{})
 	db.AutoMigrate(&TUserRole{})
-	//db.AutoMigrate(&CryptoDownload{})
-	//db.AutoMigrate(&CryptoReport{})
-	//db.AutoMigrate(&CryptoUsed{})
-	////db.AutoMigrate(&GenesisCryptoUsage{})
-	//db.AutoMigrate(&TConsistence{})
-	//db.AutoMigrate(&CryptoFile{})
-	//db.AutoMigrate(&MixConsistencyInfo{})
+	db.AutoMigrate(&TEnterApplyAgentInfo{})
+	db.AutoMigrate(&TEnterApplyOrgInfo{})
+	db.AutoMigrate(&TFile{})
+	db.AutoMigrate(&TPersonCertApplyInfo{})
+	db.AutoMigrate(&TWfNode{})
+	db.AutoMigrate(&TWfNodeRole{})
+	db.AutoMigrate(&TWorkflow{})
 	return nil
 }
 

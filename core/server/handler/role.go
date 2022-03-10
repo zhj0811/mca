@@ -94,3 +94,29 @@ func AddRolesForUser(ctx *gin.Context) {
 	common.Response(ctx, nil, common.Success, nil)
 	return
 }
+
+func GetRoles(ctx *gin.Context) {
+	logger.Debug("Enter get roles func...")
+	roles, err := db.GetRoles()
+	if err != nil {
+		logger.Errorf("Query user roles err %s", err.Error())
+		common.Response(ctx, err, common.QueryDBErr, nil)
+		return
+	}
+	logger.Info("Query user roles success.")
+	common.Response(ctx, nil, common.Success, roles)
+	return
+}
+
+func GetSpecUserRole(ctx *gin.Context) {
+	id := ctx.Param("id")
+	roles, err := db.GetSpecUserRole(id)
+	if err != nil {
+		logger.Errorf("Query user %s roles err %s", id, err.Error())
+		common.Response(ctx, err, common.QueryDBErr, nil)
+		return
+	}
+	logger.Infof("Query user %s roles success.", id)
+	common.Response(ctx, nil, common.Success, &roles)
+	return
+}
