@@ -19,7 +19,8 @@ type TApply struct {
 	CreatedAt time.Time `json:"created_at"`
 }
 
-func GetApply(id string) (res []*TApply, err error) {
+// GetActApply 根据审核员用户id获取待办事项
+func GetActApply(id string) (res []*TApply, err error) {
 
 	roleSql := fmt.Sprintf("select t_user_role.id from t_user_role where t_user_role.user_id = \"%s\"", id)
 	nodeSql := fmt.Sprintf("select t_wf_node_role.wf_node_id from t_wf_node_role where t_wf_node_role.role_id in (%s)", roleSql)
@@ -28,4 +29,8 @@ func GetApply(id string) (res []*TApply, err error) {
 
 	err = db.Raw(sql).Scan(&res).Error
 	return
+}
+
+func InsertApply(row *TApply) error {
+	return db.Model(&TApply{}).Create(row).Error
 }

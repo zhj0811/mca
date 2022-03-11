@@ -92,7 +92,7 @@ func GetSpecWorkflow(ctx *gin.Context) {
 
 func GetActWfs(ctx *gin.Context) {
 	id := ctx.GetHeader("id")
-	res, err := db.GetApply(id)
+	res, err := db.GetActApply(id)
 	if err != nil {
 		logger.Errorf("Query  workflows err %s", err.Error())
 		common.Response(ctx, err, common.QueryDBErr, nil)

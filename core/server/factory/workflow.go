@@ -33,7 +33,7 @@ func CreateCertWF(req *CertApplyWfReq) common.ResponseInfo {
 		return res
 	}
 	for i, node := range req.WfNodes {
-		wfNode := db.TWfNode{WfNodeName: node.WfNodeName, WfNodeDesc: node.WfNodeDesc, WfNodeIndex: int8(i), WfId: wf.WfId}
+		wfNode := db.TWfNode{WfNodeName: node.WfNodeName, WfNodeDesc: node.WfNodeDesc, WfNodeIndex: int8(i + 1), WfId: wf.WfId}
 		err = db.InsertWfNode(&wfNode)
 		if err != nil {
 			err = errors.WithMessage(err, "insert workflow node failed")

@@ -7,9 +7,14 @@ type TWfNode struct {
 	WfNodeName  string `json:"wf_node_name"`
 	WfNodeDesc  string `json:"wf_node_desc"`
 	WfNodeIndex int8   `json:"wf_node_index"`
-	WfNodeType  int8   // 节点类型 0: 开始 1：结束 2：操作
+	WfNodeType  int8   // 节点类型 0: 开始 1：结束 2：操作 冗余字段
 }
 
 func InsertWfNode(row *TWfNode) error {
 	return db.Model(&TWfNode{}).Create(row).Error
+}
+
+func GetSpecWfNode(wfId, wfNodeIndex int8) (row *TWfNode, err error) {
+	err = db.Model(&TWfNode{}).Where("wf_id = ? AND wf_node_index = ?", wfId, wfNodeIndex).Find(&row).Error
+	return
 }

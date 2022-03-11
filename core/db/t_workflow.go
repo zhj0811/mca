@@ -21,3 +21,8 @@ func GetLastWorkflows() (rows []*TWorkflow, err error) {
 	err = db.Model(&TWorkflow{}).Group("wft_id").Having("max(wf_id)").Find(&rows).Error
 	return
 }
+
+func GetLastWorkflow(t int8) (row TWorkflow, err error) {
+	err = db.Model(&TWorkflow{}).Where("wft_id = ?", t).Last(&row).Error
+	return
+}

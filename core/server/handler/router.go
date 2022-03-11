@@ -39,7 +39,8 @@ func createRouter() *gin.Engine {
 		web.GET("/user/role/:id", GetSpecUserRole) //超管获取执行用户的所有角色
 
 		wf := web.Group("workflow")
-		wf.POST("/", CreateCertWF)                //超管创建申请流程
+		wf.POST("/", CreateCertWF) //超管创建申请流程
+
 		wf.POST("/node/role", CreateWfNodeRole)   //创建流程节点操作角色
 		wf.DELETE("/node/role", DeleteWfNodeRole) //创建流程节点操作角色
 

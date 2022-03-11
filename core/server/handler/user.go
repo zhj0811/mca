@@ -1,6 +1,8 @@
 package handler
 
 import (
+	"strconv"
+
 	"github.com/gin-gonic/gin"
 	"jzsg.com/mca/common/define"
 	"jzsg.com/mca/core/common"
@@ -84,7 +86,20 @@ func GetUserInfo(ctx *gin.Context) {
 }
 
 func GetAllOpr(ctx *gin.Context) {
-	res, err := db.GetAllOpr()
+	name := ctx.Query("name")
+	status := ctx.Query("status")
+	page := ctx.Query("page")
+	count := ctx.Query("count")
+	p, _ := strconv.Atoi(page)
+	if p < 1 {
+		p = 1
+	}
+	limit, _ := strconv.Atoi(count)
+	if limit < 1 {
+		limit = 5
+	}
+	offset := (p - 1) * limit
+	res, err := db.GetAllOpr(name, status, limit, offset)
 	if err != nil {
 		logger.Errorf("Get operation user info failed %s.", err.Error())
 		common.Response(ctx, err, common.QueryDBErr, nil)

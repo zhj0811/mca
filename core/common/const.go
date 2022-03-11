@@ -14,6 +14,7 @@ const (
 	LocalServiceErr
 	RemoteServiceErr
 	InvalidCryptoErr
+	InvalidWorkflowErr
 
 	DBErr
 	ExecErr

@@ -1,6 +1,8 @@
 package db
 
 import (
+	"fmt"
+
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"jzsg.com/mca/core/server/config"
 	"jzsg.com/mca/core/utils"
@@ -28,7 +30,8 @@ func InsertUser(user *TUser) error {
 }
 
 func PutUser(row *TUser) error {
-	return db.Save(row).Error
+	return db.Model(row).Omit("passwd").Save(row).Error //忽略密码
+	//return db.Save(row).Error
 }
 
 var adminId string
@@ -65,8 +68,18 @@ func GetUserById(id string) (res TUser, err error) {
 	return
 }
 
-func GetAllOpr() (res []*TUser, err error) {
-	err = db.Model(&TUser{}).Where("user_id != ?", adminId).Find(&res).Error
+func GetAllOpr(name, status string, limit, offset int) (res []*TUser, err error) {
+	var nameSql, statusSql string
+	if name != "" {
+		nameSql = fmt.Sprintf(" AND (name LIKE \"%%%s%%\" OR nickname LIKE \"%%%s%%\")", name, name)
+	}
+
+	if status != "" {
+		statusSql = fmt.Sprintf(" AND status = %s", status)
+	}
+
+	sql := fmt.Sprintf("select t_user.* from t_user where user_id != \"%s\"%s%s limit %d, %d", adminId, nameSql, statusSql, offset, limit)
+	err = db.Raw(sql).Scan(&res).Error
 	return
 }
 
