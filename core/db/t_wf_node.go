@@ -14,6 +14,11 @@ func InsertWfNode(row *TWfNode) error {
 	return db.Model(&TWfNode{}).Create(row).Error
 }
 
+func GetWfNodeById(id int) (row TWfNode, err error) {
+	err = db.Model(&TWfNode{}).Where("wf_node_id = ?", id).First(&row).Error
+	return
+}
+
 func GetSpecWfNode(wfId, wfNodeIndex int8) (row *TWfNode, err error) {
 	err = db.Model(&TWfNode{}).Where("wf_id = ? AND wf_node_index = ?", wfId, wfNodeIndex).Find(&row).Error
 	return

@@ -14,3 +14,7 @@ type TEnterApplyAgentInfo struct {
 	AuzPic        string `json:"auz_pic"`                                                //授权书图片链接地址
 	AgntIdeStatus int8   `json:"agnt_ide_status"`                                        //经办人证件校验状态	0 default  1成功 -1 失败
 }
+
+func InsertAgentInfo(row *TEnterApplyAgentInfo) error {
+	return db.Model(&TEnterApplyAgentInfo{}).Create(row).Error
+}

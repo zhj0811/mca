@@ -27,6 +27,7 @@ type SpecWorkflow struct {
 	RoleId       int8 `json:"role_id"`
 }
 
+// GetSpecWorkflow 获取指定流程的信息 包含节点信息，角色信息
 func GetSpecWorkflow(id string) (res []SpecWorkflow, err error) {
 	sql := fmt.Sprintf("select node.*, role.id as wf_node_role_id, role.role_id "+
 		"from t_wf_node as node left join t_wf_node_role as role on node.wf_node_id = role.wf_node_id where node.wf_id = %s", id)

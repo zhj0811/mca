@@ -2,6 +2,7 @@ package db
 
 import (
 	"fmt"
+	"time"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"jzsg.com/mca/core/server/config"
@@ -9,13 +10,14 @@ import (
 )
 
 type TUser struct {
-	UserId   string `json:"user_id" gorm:"column:user_id;primaryKey;not null"`
-	Name     string `json:"name" gorm:"uniqueIndex;not null"`
-	Nickname string `json:"nickname"`
-	Phone    string `json:"phone"`
-	Passwd   string `json:"passwd"`
-	Email    string `json:"email"`
-	Status   int8   `json:"status"`
+	UserId    string    `json:"user_id" gorm:"column:user_id;primaryKey;not null"`
+	Name      string    `json:"name" gorm:"uniqueIndex,length:20;not null"`
+	Nickname  string    `json:"nickname"`
+	Phone     string    `json:"phone"`
+	Passwd    string    `json:"passwd"`
+	Email     string    `json:"email"`
+	Status    int8      `json:"status"`
+	CreatedAt time.Time `json:"created_at"`
 }
 
 const (
@@ -68,7 +70,7 @@ func GetUserById(id string) (res TUser, err error) {
 	return
 }
 
-func GetAllOpr(name, status string, limit, offset int) (res []*TUser, err error) {
+func GetAllOpr(name, status string, limit, offset int) (totalCount int64, res []*TUser, err error) {
 	var nameSql, statusSql string
 	if name != "" {
 		nameSql = fmt.Sprintf(" AND (name LIKE \"%%%s%%\" OR nickname LIKE \"%%%s%%\")", name, name)
@@ -78,8 +80,16 @@ func GetAllOpr(name, status string, limit, offset int) (res []*TUser, err error)
 		statusSql = fmt.Sprintf(" AND status = %s", status)
 	}
 
-	sql := fmt.Sprintf("select t_user.* from t_user where user_id != \"%s\"%s%s limit %d, %d", adminId, nameSql, statusSql, offset, limit)
-	err = db.Raw(sql).Scan(&res).Error
+	countSql := fmt.Sprintf("select count(2) from t_user where user_id != \"%s\"%s%s", adminId, nameSql, statusSql)
+
+	err = db.Raw(countSql).Count(&totalCount).Error
+	if err != nil {
+		return
+	}
+
+	limitSql := fmt.Sprintf("select t_user.* from t_user where user_id != \"%s\"%s%s limit %d, %d", adminId, nameSql, statusSql, offset, limit)
+
+	err = db.Raw(limitSql).Scan(&res).Error
 	return
 }
 
@@ -91,7 +101,12 @@ func IsAdminRole(id string) int8 {
 }
 
 func UpdatePasswd(id, passwd string) error {
-	err := db.Model(&TUser{Name: id}).Update("passwd", passwd).Error
+	err := db.Model(&TUser{UserId: id}).Update("passwd", passwd).Error
+	return err
+}
+
+func UpdateUserStatus(id string, status int8) error {
+	err := db.Model(&TUser{UserId: id}).Update("status", status).Error
 	return err
 }
 

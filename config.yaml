@@ -13,8 +13,8 @@ admin:
   passwd: 12345678
 
 db:
-  #  type:
+#  type: mysql
   name: test
-  port: 3306
+  port: 33061
   user: root
   passwd: passwd

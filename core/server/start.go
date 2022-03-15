@@ -42,17 +42,18 @@ func StartCmd() *cobra.Command {
 				}
 				command := exec.Command(os.Args[0], as...)
 				command.Start()
-				pidFile := fmt.Sprintf("%s.pid", CmdRoot)
-				if utils.CheckFileIsExist(pidFile) {
-					os.Remove(pidFile)
-				}
+
 				if command.Process == nil {
 					panic("process is nil")
 				}
-				ioutil.WriteFile(pidFile, []byte(fmt.Sprintf("%d", command.Process.Pid)), 0666)
 				//daemon = false
 				os.Exit(0)
 			}
+			pidFile := fmt.Sprintf("%s.pid", CmdRoot)
+			if utils.CheckFileIsExist(pidFile) {
+				os.Remove(pidFile)
+			}
+			ioutil.WriteFile(pidFile, []byte(fmt.Sprintf("%d", os.Getpid())), 0666)
 			return serve(args)
 		},
 	}

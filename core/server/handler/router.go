@@ -28,8 +28,9 @@ func createRouter() *gin.Engine {
 		web.PUT("/user/info", PutUserInfo)       //超管或业务员更新用户信息
 		web.GET("/user/name/valid", IsValidName) //超管判断用户名是否唯一
 
-		web.POST("/register", Register)                    //超管注册操作员
-		web.PATCH("/user/pass", PassReset)                 //超管重置密码
+		web.POST("/register", Register)    //超管注册操作员
+		web.PATCH("/user/pass", PassReset) //超管重置密码
+		web.PATCH("user/status", ResetUserStatus)
 		web.POST("/user/role", CreateRole)                 //超管创建角色
 		web.POST("/user/user_role", CreateUserRole)        //超管给用户绑定一角色
 		web.POST("/user/role/role_users", AddUsersForRole) //超管给某个角色添加多用户
@@ -49,11 +50,15 @@ func createRouter() *gin.Engine {
 
 		opr := web.Group("/opr")
 		opr.GET("/wf/act", GetActWfs)
+		opr.POST("/wf/handle", HandleSpecApply)
+		opr.PATCH("/wf/handle/apply/mark/:id", MarkSpecApply)
 	}
 
 	app := v1.Group("/app")
 	{
 		app.POST("/ind/apply", CreateIndCertApply)
+		app.POST("/enter/apply", CreateEnterCertApply)
+		app.GET("/cert/apply", GetApplicantCert)
 	}
 
 	//v1.POST("/report", handler.Report)

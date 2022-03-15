@@ -92,13 +92,39 @@ func GetSpecWorkflow(ctx *gin.Context) {
 
 func GetActWfs(ctx *gin.Context) {
 	id := ctx.GetHeader("id")
-	res, err := db.GetActApply(id)
+	totalCount, res, err := db.GetActApply(id)
 	if err != nil {
 		logger.Errorf("Query  workflows err %s", err.Error())
 		common.Response(ctx, err, common.QueryDBErr, nil)
 		return
 	}
 	logger.Info("Query  workflows success.")
-	common.Response(ctx, nil, common.Success, &res)
+	common.Response(ctx, nil, common.Success, &common.PagingRes{TotalCount: totalCount, List: &res})
+	return
+}
+
+func HandleSpecApply(ctx *gin.Context) {
+	req := factory.HandleSpecApplyReq{}
+	err := ctx.ShouldBindJSON(&req)
+	if err != nil {
+		logger.Errorf("Request info err %s", err.Error())
+		common.Response(ctx, err, common.RequestInfoErr, nil)
+		return
+	}
+	res := factory.HandleSpecApply(&req)
+	if res.Code != common.Success {
+		logger.Errorf("Handle cert apply %s failed %s.", req.UserId, res.Msg)
+		common.SimpleResponse(ctx, &res)
+		return
+	}
+	logger.Infof("Create enterprise cert apply  %s success", req.UserId)
+	common.SimpleResponse(ctx, &res)
+	return
+}
+
+func MarkSpecApply(ctx *gin.Context) {
+	id := ctx.Param("id")
+	go db.MarkApply(id)
+	common.Response(ctx, nil, common.Success, nil)
 	return
 }

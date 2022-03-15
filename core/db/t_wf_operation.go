@@ -8,3 +8,7 @@ type TWfOperation struct {
 	UserId   string `json:"user_id"`                             //审核员id
 	OprDesc  string `json:"opr_desc"`                            //html 前端备忘 	操作描述 同意 拒绝
 }
+
+func InsertWfOpr(row *TWfOperation) error {
+	return db.Create(row).Error
+}

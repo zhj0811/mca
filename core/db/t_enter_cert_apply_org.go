@@ -12,3 +12,7 @@ type TEnterApplyOrgInfo struct {
 	LegalElecSeal string //法人印章图片链接
 	HashType      int    //hash算法类型
 }
+
+func InsertEnterOrgInfo(row *TEnterApplyOrgInfo) error {
+	return db.Model(&TEnterApplyOrgInfo{}).Create(row).Error
+}

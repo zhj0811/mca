@@ -6,6 +6,11 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+type PagingRes struct {
+	TotalCount int64       `json:"total_count"`
+	List       interface{} `json:"list"`
+}
+
 // ResponseInfo 通用返回
 type ResponseInfo struct {
 	Code int         `json:"code"`

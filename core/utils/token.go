@@ -44,9 +44,9 @@ func GenerateToken(id string) string {
 	//jwfConf := config.JWTInfo()
 	claim := jwt.StandardClaims{
 		//Audience:
-		ExpiresAt: time.Now().Add(expire).Unix(),
-		Id:        id,
-		Issuer:    issuer,
+		//ExpiresAt: time.Now().Add(expire).Unix(),
+		Id:     id,
+		Issuer: issuer,
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claim)
 	ss, err := token.SignedString([]byte(key))

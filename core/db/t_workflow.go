@@ -12,6 +12,13 @@ type TWorkflow struct {
 	CreatedAt time.Time `json:"created_at"`
 }
 
+const (
+	// //WfStatusDefault int8 = iota
+
+	WfStatusDenied   int8 = -1
+	WfStatusApproved int8 = 1
+)
+
 func InsertWorkflow(row *TWorkflow) error {
 	return db.Model(&TWorkflow{}).Create(row).Error
 }
@@ -25,4 +32,13 @@ func GetLastWorkflows() (rows []*TWorkflow, err error) {
 func GetLastWorkflow(t int8) (row TWorkflow, err error) {
 	err = db.Model(&TWorkflow{}).Where("wft_id = ?", t).Last(&row).Error
 	return
+}
+
+func GetWorkflowById(id int8) (row TWorkflow, err error) {
+	err = db.Model(&TWorkflow{}).First(&row, id).Error
+	return
+}
+
+func UpdateWfStatus(id, status int8) error {
+	return db.Model(&TWorkflow{WftId: id}).Update("status", status).Error
 }

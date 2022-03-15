@@ -13,6 +13,11 @@ type loginRes struct {
 	Role  int8   `json:"role"`
 }
 
+type UserStatus struct {
+	User   string `json:"user"`
+	Status int8   `json:"status"`
+}
+
 func Login(req define.User) common.ResponseInfo {
 	res := common.ResponseInfo{
 		Code: common.Success,

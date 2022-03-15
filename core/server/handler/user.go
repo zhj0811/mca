@@ -72,6 +72,26 @@ func PassReset(ctx *gin.Context) {
 	return
 }
 
+func ResetUserStatus(ctx *gin.Context) {
+	req := factory.UserStatus{}
+	err := ctx.ShouldBindJSON(&req)
+	if err != nil {
+		logger.Errorf("Request info err %s", err.Error())
+		common.Response(ctx, err, common.RequestInfoErr, nil)
+		return
+	}
+
+	err = db.UpdateUserStatus(req.User, req.Status)
+	if err != nil {
+		logger.Errorf("Update user %s status failed %s.", req.User, err.Error())
+		common.Response(ctx, err, common.UpdateDBErr, nil)
+		return
+	}
+	logger.Infof("Update user %s status failed %s.", req.User, err.Error())
+	common.Response(ctx, nil, common.Success, nil)
+	return
+}
+
 func GetUserInfo(ctx *gin.Context) {
 	id := ctx.GetHeader("id")
 	res, err := db.GetUserById(id)
@@ -99,14 +119,14 @@ func GetAllOpr(ctx *gin.Context) {
 		limit = 5
 	}
 	offset := (p - 1) * limit
-	res, err := db.GetAllOpr(name, status, limit, offset)
+	totalCount, res, err := db.GetAllOpr(name, status, limit, offset)
 	if err != nil {
 		logger.Errorf("Get operation user info failed %s.", err.Error())
 		common.Response(ctx, err, common.QueryDBErr, nil)
 		return
 	}
 	logger.Debug("Get operation user info success.")
-	common.Response(ctx, nil, common.Success, &res)
+	common.Response(ctx, nil, common.Success, &common.PagingRes{TotalCount: totalCount, List: &res})
 	return
 }
 
